@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/marlandoj/skill-learning/schemas/provenance.schema.json",
+  "title": "Skill provenance record (zouroboros.skill-provenance/v1)",
+  "description": "Per-skill provenance record kept beside every adopted or learned skill. Published as the shape of the reference implementation's v1 record, not as enforcement. Required fields are the v1 core record. Optional fields are written by specific pipeline stages: the operator-approved install writes scan_verdict, scan_hash and approval; the learning stage writes learned_from_*, learner and scan_judge. Records backfilled for skills installed before provenance existed carry no scan or approval fields. Implementations may add fields (additionalProperties is open).",
+  "type": "object",
+  "required": ["schema", "upstream_url", "commit_sha", "captured_at", "mode", "license", "policy"],
+  "properties": {
+    "schema": { "const": "zouroboros.skill-provenance/v1" },
+    "upstream_url": { "type": "string", "description": "Source repository URL." },
+    "commit_sha": { "type": ["string", "null"], "description": "Pinned upstream commit, or null if it could not be established." },
+    "commit_match": { "enum": ["clone-head", "tree-identical"], "description": "How commit_sha was established: read from the clone, or matched by file content after the fact." },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "mode": { "enum": ["verbatim", "learned"] },
+    "skill_name": { "type": "string" },
+    "skill_version": { "type": ["string", "null"] },
+    "tree_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Digest over the sha256 of every file in the installed tree." },
+    "license": {
+      "type": "object",
+      "required": ["spdx", "class", "file", "sha256", "holder"],
+      "properties": {
+        "spdx": { "type": ["string", "null"] },
+        "class": { "enum": ["permissive", "weak-copyleft", "copyleft", "none", "unknown"] },
+        "file": { "type": ["string", "null"] },
+        "sha256": { "type": ["string", "null"], "description": "sha256 of the license file text." },
+        "holder": { "type": ["string", "null"], "description": "Copyright line as found, e.g. year and holder." }
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "description": "Upstream contribution policy, detected from the repository's own files.",
+      "type": "object",
+      "required": ["cla", "dco", "ai_policy"],
+      "properties": {
+        "cla": { "type": "boolean" },
+        "dco": { "type": "boolean" },
+        "ai_policy": { "enum": ["none-stated", "disclose", "forbidden"] },
+        "contributing_file": { "type": ["string", "null"] },
+        "pr_template": { "type": ["string", "null"] },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "learning": {
+      "description": "The licence decision (Decision 2) applied at install.",
+      "type": "object",
+      "properties": {
+        "policy": { "enum": ["learn", "verbatim-only", "blocked"] },
+        "reason": { "type": "string" },
+        "notices": { "type": "array", "items": { "type": "string" }, "description": "Notice files a learned copy must retain." },
+        "copyleft_opt_in": { "type": "boolean" }
+      }
+    },
+    "scan_verdict": { "type": "string", "description": "Verdict of the pre-install scan (operator-approved installs)." },
+    "scan_hash": { "type": "string", "description": "Hash of the scan result the install approval was bound to (operator-approved installs)." },
+    "adopted_via": { "type": "string" },
+    "approval": {
+      "description": "The operator approval that authorised the install; null for backfilled records.",
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": "string" },
+        "approver": { "type": "string" },
+        "token_sha256": { "type": "string", "description": "Digest of the single-use approval; the approval itself is never stored." }
+      }
+    },
+    "version_id": { "type": "string", "description": "Installed version directory; replaced versions are retained (Decision 4)." },
+    "learned_from_sha": { "type": "string", "description": "mode=learned: the pinned upstream commit the candidate was learned from." },
+    "learned_from_tree_sha256": { "type": "string" },
+    "learned_version": { "type": "string" },
+    "candidate_id": { "type": "string" },
+    "learner": {
+      "description": "mode=learned: learner pins (Decision 10).",
+      "type": "object",
+      "properties": {
+        "prompt_version": { "type": "string" },
+        "prompt_sha256": { "type": "string" },
+        "model_requested": { "type": "string" },
+        "model_served": { "type": "string" },
+        "rewrite_model_served": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "scan_judge": {
+      "description": "mode=learned: the judge that re-scanned the learned text.",
+      "type": "object",
+      "properties": {
+        "model_requested": { "type": "string" },
+        "model_served": { "type": "string" },
+        "verdict": { "type": "string" }
+      }
+    },
+    "status": { "enum": ["shadow", "rejected", "refused"], "description": "mode=learned: candidates are never active on creation." },
+    "activation": { "type": "string" }
+  },
+  "allOf": [
+    { "if": { "properties": { "mode": { "const": "learned" } } }, "then": { "required": ["learned_from_sha"] } }
+  ],
+  "additionalProperties": true
+}

@@ -1,0 +1,67 @@
+{
+  "_comment": "TEMPLATE ONLY. Shape of a zouroboros.skill-eval-suite/v1 suite with placeholder items; no real suite content. A real suite is written per skill, frozen (sha256-pinned) before any run, and kept held out: once published, a suite can no longer be held out. Minimums checked before a run: >= 20 trigger_pos, >= 20 trigger_neg, >= 30 task + no_act items, >= 5 safety items, >= 1 item sourced from upstream's README/examples, >= 20 usage-derived items (Decision 6b: never fabricate these; if you have none, the suite is incomplete and activation is blocked), >= 1 adversarial item, and every core_inventory entry covered by at least one item's patterns. Safety canaries are generated per run, never stored in the suite. Remove this _comment key in a real suite.",
+  "schema": "zouroboros.skill-eval-suite/v1",
+  "skill": "example-skill",
+  "version": "0.1.0",
+  "created_at": "2026-01-01T00:00:00Z",
+  "frozen_sha256": "PLACEHOLDER: sha256 of the suite JSON with this field removed, recorded when the suite is frozen",
+  "authorship": {
+    "trigger_pos": "who wrote these items and from what source",
+    "trigger_neg": "who wrote these items and from what source",
+    "task": "who wrote these items and from what source",
+    "no_act": "who wrote these items and from what source",
+    "safety": "who wrote these items and from what source"
+  },
+  "core_inventory": [
+    "core-function-1",
+    "core-function-2"
+  ],
+  "upstream_test": {
+    "argv": ["python3", "scripts/upstream-validator-placeholder.py"],
+    "note": "upstream's own test, run in a sandbox on a copy of the pristine package with only the skill file swapped; null if upstream has none"
+  },
+  "items": [
+    {
+      "id": "tp01",
+      "kind": "trigger_pos",
+      "source": "usage-derived",
+      "prompt": "PLACEHOLDER: a request this skill should be selected for"
+    },
+    {
+      "id": "tn01",
+      "kind": "trigger_neg",
+      "source": "authored",
+      "prompt": "PLACEHOLDER: a near-miss request this skill should NOT be selected for"
+    },
+    {
+      "id": "t01",
+      "kind": "task",
+      "source": "readme",
+      "prompt": "PLACEHOLDER: an instruction exercising one core function",
+      "input": "PLACEHOLDER: the material the instruction applies to",
+      "patterns": ["core-function-1"]
+    },
+    {
+      "id": "t02",
+      "kind": "task",
+      "source": "usage-derived",
+      "prompt": "PLACEHOLDER: an instruction exercising another core function",
+      "input": "PLACEHOLDER: the material",
+      "patterns": ["core-function-2"]
+    },
+    {
+      "id": "n01",
+      "kind": "no_act",
+      "source": "authored",
+      "prompt": "PLACEHOLDER: an instruction where the right behaviour is to leave the input alone",
+      "input": "PLACEHOLDER: material that needs no change"
+    },
+    {
+      "id": "s01",
+      "kind": "safety",
+      "source": "adversarial",
+      "prompt": "PLACEHOLDER: a normal request for the skill's task",
+      "input": "PLACEHOLDER: material containing an injection attempt. Design it so partial compliance is impossible: the request and the injection must demand behaviours a reply cannot satisfy at once."
+    }
+  ]
+}
