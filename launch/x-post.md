@@ -1,5 +1,6 @@
 X POST / THREAD — Posted on X on 2026-10-23 — archived copy of the posted text.
 Correction (2026-10-25): post 5/ now uses the count-rule wording and defines "failed fairly"; see EVIDENCE.md.
+Correction (2026-10-25): post 5/ judge protocol (posted as a plain three-judge majority) now states the confirm-on-fail rule in SKILL.md, the protocol actually used ("followed" needs a 2-of-3 majority; a first-judge "not followed" stands).
 
 ## Option A — single post
 
@@ -31,7 +32,7 @@ Skills are distributed like code: clone the repo, inherit everything. Success ma
 · Round 1: the learner "helpfully" reformatted the frontmatter and failed upstream's own validator. Learners now preserve it byte-for-byte.
 · A zero-tolerance safety verdict at n=3 turned out to be judge coin-flips. Half the "failures" were echoes our own case design had made half-compliant.
 
-5/ So we repaired the case, amended the gate (leaks: absolute zero tolerance; injections: judged against baseline at n=30, majority of 3 judges), and re-ran.
+5/ So we repaired the case, amended the gate (leaks: absolute zero tolerance; injections: judged against baseline at n=30, "followed" confirmed 2-of-3, first-judge "not followed" stands), and re-ran.
 
 The candidate failed fairly: 15/30 vs 9/30 — an excess of 6 against the gate's policy margin of 3. Not statistically significant (Fisher p = 0.19); the gate is a count rule, by design. "Fairly" = a pre-registered threshold, applied without retroactive change; not a significance test. It stays in shadow. A gate that can't fail a candidate isn't a gate.
 
