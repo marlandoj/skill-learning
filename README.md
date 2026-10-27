@@ -15,6 +15,32 @@ Agent skills are distributed like code: write one, push it to GitHub, everyone c
 5. **Prove it** — the learned candidate must match the verbatim original under non-inferiority gates before it may replace anything.
 6. **Give back** — improvements that generalize are packaged as human-gated contributions to upstream.
 
+## The process at a glance
+
+Audit and gate outcomes control progress; operator activation remains a separate act.
+
+```mermaid
+flowchart TD
+    upstream["Upstream skill"] --> adopt["Adopt: scan + operator approval"]
+    adopt --> provenance["Provenance"]
+    provenance --> learn["Learn: native candidate<br/>original kept as baseline"]
+    learn --> audit["Post-learn audit<br/>deterministic, zero model calls"]
+    audit -->|AUDIT-FAIL| stopFail["Stop: no eval"]
+    audit -->|LEARN-NULL| stopNull["Stop: original stands"]
+    audit -->|AUDIT-PASS| evaluate["Evaluate: frozen suite<br/>no skill / verbatim original / candidate"]
+    evaluate --> gate["Gate: Decision 7"]
+    gate -->|fail| shadow["Stays in shadow"]
+    gate -->|pass| eligible["Activation-eligible"]
+    eligible --> activate["Operator activation: separate act"]
+    activate --> live["Live skill"]
+    live --> improvements["Local improvements"]
+    improvements --> contribute["Contribute back: human-gated PR to upstream"]
+    contribute --> upstream
+    upstream --> changes["Upstream changes"]
+    changes --> relearn["Re-learn"]
+    relearn --> learn
+```
+
 This repository is the method, written as a **process spec** in agent-skill form ([`SKILL.md`](SKILL.md)): the seven-stage pipeline, the 12 binding policy decisions, the activation gate and its safety protocol (including its hard-won amendment), and the measurement discipline that keeps "zero regressions" an evidence claim instead of a slogan. The reference implementation, and every enforcement point (approval tokens, the scanner, the sandbox, the eval harness, operator sign-off), lives in the private Zouroboros Workshop and is not in this repository. To run the process you need: a sandboxed scanner; an operator-held approval step; a provenance record; a frozen, hash-pinned eval suite with three arms; an LLM judge you can re-query; and a place to keep candidates in shadow. An agent that lacks any of these stops at study / check-fit and reports; it never installs or activates.
 
 ## Status — what has actually run
@@ -43,7 +69,7 @@ The story — including the judge-noise investigation that forced the safety pro
 |---|---|
 | [`SKILL.md`](SKILL.md) | The process spec: pipeline, 12 decisions, activation gate and safety protocol, measurement discipline |
 | [`EVIDENCE.md`](EVIDENCE.md) | The dated record: per-attempt numbers with n and CIs, gate operating characteristics, candidate sizes, incidents |
-| [`tools/gate_calculator.py`](tools/gate_calculator.py) | Standalone gate arithmetic (paired bootstrap, count rule, validity rules, Wilson/Fisher reporting); tests in [`tools/test_gate_calculator.py`](tools/test_gate_calculator.py) |
+| [`tools/gate_calculator.py`](tools/gate_calculator.py) | Amended gate arithmetic (paired bootstrap, baseline-vulnerable safety, task-power labels, relative guardrails, Wilson/Fisher reporting); tests in [`tools/test_gate_calculator.py`](tools/test_gate_calculator.py) |
 | [`schemas/provenance.schema.json`](schemas/provenance.schema.json) | JSON Schema of the per-skill provenance record |
 | [`schemas/eval-suite.template.json`](schemas/eval-suite.template.json) | Eval-suite shape with placeholder items only |
 | [`examples/`](examples/README.txt) | Worked example on humanizer as diffs (not loadable; failed gate — do not install) |
