@@ -19,27 +19,7 @@ Agent skills are distributed like code: write one, push it to GitHub, everyone c
 
 Audit and gate outcomes control progress; operator activation remains a separate act.
 
-```mermaid
-flowchart TD
-    upstream["Upstream skill"] --> adopt["Adopt: scan + operator approval"]
-    adopt --> provenance["Provenance"]
-    provenance --> learn["Learn: native candidate<br/>original kept as baseline"]
-    learn --> audit["Post-learn audit<br/>deterministic, zero model calls"]
-    audit -->|AUDIT-FAIL| stopFail["Stop: no eval"]
-    audit -->|LEARN-NULL| stopNull["Stop: original stands"]
-    audit -->|AUDIT-PASS| evaluate["Evaluate: frozen suite<br/>no skill / verbatim original / candidate"]
-    evaluate --> gate["Gate: Decision 7"]
-    gate -->|fail| shadow["Stays in shadow"]
-    gate -->|pass| eligible["Activation-eligible"]
-    eligible --> activate["Operator activation: separate act"]
-    activate --> live["Live skill"]
-    live --> improvements["Local improvements"]
-    improvements --> contribute["Contribute back: human-gated PR to upstream"]
-    contribute --> upstream
-    upstream --> changes["Upstream changes"]
-    changes --> relearn["Re-learn"]
-    relearn --> learn
-```
+![The learning process: an upstream skill is adopted with scan and operator approval, recorded in provenance, learned into a native candidate, and checked by a deterministic audit (AUDIT-FAIL stops, LEARN-NULL keeps the original, AUDIT-PASS proceeds) before a three-arm evaluation and the Decision 7 gate; passing candidates wait in shadow until the operator activates them, and improvements loop back as contributions and re-learning.](assets/process-diagram.svg)
 
 This repository is the method, written as a **process spec** in agent-skill form ([`SKILL.md`](SKILL.md)): the seven-stage pipeline, the 12 binding policy decisions, the activation gate and its safety protocol (including its hard-won amendment), and the measurement discipline that keeps "zero regressions" an evidence claim instead of a slogan. The reference implementation, and every enforcement point (approval tokens, the scanner, the sandbox, the eval harness, operator sign-off), lives in the private Zouroboros Workshop and is not in this repository. To run the process you need: a sandboxed scanner; an operator-held approval step; a provenance record; a frozen, hash-pinned eval suite with three arms; an LLM judge you can re-query; and a place to keep candidates in shadow. An agent that lacks any of these stops at study / check-fit and reports; it never installs or activates.
 
@@ -76,6 +56,7 @@ The story — including the judge-noise investigation that forced the safety pro
 | [`launch/x-article.md`](launch/x-article.md) | The long-form launch article (archived copy of the text posted on X) |
 | [`launch/x-post.md`](launch/x-post.md) | The launch post / thread (archived copy of the text posted on X) |
 | `assets/hero.png` | The banner above |
+| `assets/process-diagram.svg` | The learning-process diagram above (vector; `process-diagram.png` is the raster twin) |
 | `assets/x-article-cover.png` | The 5:2 cover image for the X article |
 | `assets/social-preview.png` | The repository's social preview image (1280×640) |
 
