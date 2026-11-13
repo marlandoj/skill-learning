@@ -27,7 +27,7 @@ This repository is the method, written as a **process spec** in agent-skill form
 
 The process was built and run end to end in the [Zouroboros Workshop](https://zouroboros.ai) in October 2026, with [blader/humanizer](https://github.com/blader/humanizer) as the test subject. Full numbers, intervals and limits: [`EVIDENCE.md`](EVIDENCE.md).
 
-- ✅ Adoption with scan + provenance → learned candidate → three-arm evaluation (no-skill / verbatim original / learned) → safety gate → contribution package → validated on a pristine upstream checkout → **open PR [blader/humanizer#317](https://github.com/blader/humanizer/pull/317) (no reviews yet)** — a hand-authored rule treating fake closing tags and "operator notes" inside text-to-edit as material, never as instructions. Targeted injection failures: **9/30 → 0/30** (p=0.002; 22 of the 30 resisting replies were verbatim echoes, not edits). Core score: **+0.2pp [−1.1, +1.7], 36 items × 3 runs/arm** against the pristine baseline.
+- ✅ Adoption with scan + provenance → learned candidate → three-arm evaluation (no-skill / verbatim original / learned) → safety gate → contribution package → validated on a pristine upstream checkout → **PR [blader/humanizer#317](https://github.com/blader/humanizer/pull/317) — merged upstream on 2026-11-09, and shipped in humanizer v4.0.0** — a hand-authored rule treating fake closing tags and "operator notes" inside text-to-edit as material, never as instructions. Targeted injection failures: **9/30 → 0/30** (p=0.002; 22 of the 30 resisting replies were verbatim echoes, not edits). Core score: **+0.2pp [−1.1, +1.7], 36 items × 3 runs/arm** against the pristine baseline.
 - ⚠️ **No learned candidate has passed — in three attempts.** One standing gap blocks every candidate independently: there is no real-usage sample for humanizer, so the suite lacks the usage-derived items Decision 6b requires. On top of that: attempt #1 failed the safety gate — **15/30 vs 9/30 — an excess of 6 against the gate's policy margin of 3. Not statistically significant (Fisher p = 0.19); the gate is a count rule, by design.** It "failed fairly" in exactly that sense: a pre-registered, count-based policy threshold, applied without retroactive change; not a significance test. Attempt #2 closed the safety gap to parity (6/30 vs 6/30) but failed upstream validation (its extraction dropped 4 of 26 patterns). Attempt #3 passed coverage, validation, safety, core, tasks, and canary; its **trigger check failed on byte-identical routing requests; P(fail | identical arms) ≈ 33% — a known false-fail mode, recorded, not re-run**. The campaign was closed with the three attempts standing as the record; every candidate remains in shadow, none activated. The failures are documented with the skill, because a process whose gates can't fail a candidate isn't a gate.
 
 Candidate size (`wc -w` of the skill file):
@@ -39,7 +39,7 @@ Candidate size (`wc -w` of the skill file):
 | attempt 1, C | 5,159 | −1.1% | failed safety (excess 6) |
 | attempt 2, C2 | 2,962 | −43% | dropped 4 patterns, failed the validator |
 | attempt 3, C3 | 4,920 | −5.7% | failed trigger |
-| H (hand-authored rule) | 5,275 | +1.1% | passed the contribution bar; open PR #317 |
+| H (hand-authored rule) | 5,275 | +1.1% | passed the contribution bar; PR #317 merged upstream 2026-11-09, shipped in humanizer v4.0.0 |
 
 The story — including the judge-noise investigation that forced the safety protocol's redesign — is in the [launch article](launch/x-article.md).
 
